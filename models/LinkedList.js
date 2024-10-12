@@ -78,16 +78,24 @@ module.exports = class LinkedList {
   }
 
   insertAt(value, index, list = this.list) {
-    if (this.size() + 1 < index)
-      return "Index too bigger compared to the linked list size";
-    if (index < 0) return "Invalid Index";
-    if (index === 1) {
-      const afterList = list;
-      list = new Node(value);
-      list.nextNode = afterList;
-      console.log(this.list);
-    }
+    if (this.size() < index || index < 0) throw new Error("Invalid index");
+    else if (index === 0) this.prepend(value);
+    else if (index !== 1) this.insertAt(value, index - 1, list.nextNode);
+    else {
+      const oldCurrentList = list.nextNode;
 
-    this.insertAt(value, index - 1, list.nextNode);
+      list.nextNode = new Node(value);
+      list.nextNode.nextNode = oldCurrentList;
+    }
+  }
+
+  removeAt(index, list = this.list) {
+    if (this.size() <= index || index < 0) throw new Error("Invalid index");
+    else if (index === 0) {
+      this.list = this.list.nextNode;
+    } else if (index !== 1) this.removeAt(index - 1, list.nextNode);
+    else {
+      list.nextNode = list.nextNode.nextNode;
+    }
   }
 };
